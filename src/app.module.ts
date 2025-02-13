@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DnsFailoverModule } from './dns-failover.module';
+import { VisitorController } from './controllers/visitor.controller';
+import { VisitorService } from './services/visitor.service';
 
 @Module({
   imports: [
@@ -25,5 +27,7 @@ import { DnsFailoverModule } from './dns-failover.module';
     }),
     DnsFailoverModule,
   ],
+  controllers: [VisitorController],
+  providers: [VisitorService],
 })
 export class AppModule {}

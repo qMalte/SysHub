@@ -4,7 +4,8 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
 @Entity('dns_records')
 export class DnsRecord {
@@ -36,8 +37,18 @@ export class DnsRecord {
   backupIp6: string;
 
   @ApiProperty({ description: 'The Cloudflare API token for this zone' })
+  @Exclude()
   @Column({ type: 'text', name: 'api_token' })
   apiToken: string;
+
+  @ApiProperty({ description: 'The Secret-Key to allow Edit of Policy' })
+  @Exclude()
+  @Column({ type: 'text', name: 'secret' })
+  secret: string;
+
+  @ApiProperty({ description: 'The Token to init a deletion Request' })
+  @Column({ type: 'text', name: 'delete_token', default: null })
+  deleteToken: string;
 
   @ApiProperty({ description: 'Whether the domain is currently in failover mode' })
   @Column({ default: false })

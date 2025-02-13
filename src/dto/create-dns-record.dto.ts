@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsIP, IsNotEmpty } from 'class-validator';
+import { IsString, IsIP, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateDnsRecordDto {
   @ApiProperty({ description: 'The unique id of Healthcheck in UptimeKuma' })
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
   healthCheckId: number;
 
@@ -36,4 +36,9 @@ export class CreateDnsRecordDto {
   @IsString()
   @IsNotEmpty()
   apiToken: string;
+
+  @ApiProperty({ description: 'Password / Secret - Key to edit policy' })
+  @IsString()
+  @IsNotEmpty()
+  secret: string;
 }

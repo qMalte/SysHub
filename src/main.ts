@@ -1,6 +1,6 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { config } from 'dotenv';
 
@@ -10,26 +10,29 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const config = new DocumentBuilder()
-    .setTitle('DNS Helper')
-    .setDescription('REST API of a public DNS Helper')
+    .setTitle('SYS-HUB - REST API')
+    .setDescription('REST API of SYS-HUB - A DNS Service')
     .setVersion('1.0')
-    .addBearerAuth(
+    .setExternalDoc('JSON', 'api-json')
+    .addApiKey(
       {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'API Key',
+        type: 'apiKey',
         name: 'Authorization',
-        description: 'Enter your API key',
         in: 'header',
+        description: 'Enter your API key'
       },
-      'API-Key',
+      'Auth'
     )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document, {
+    jsonDocumentUrl: 'api-json',
+    yamlDocumentUrl: 'api-yaml',
+  });
 
   await app.listen(3000);
 }
