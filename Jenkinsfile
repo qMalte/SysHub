@@ -13,7 +13,7 @@ pipeline {
 	environment {
 		REGISTRY = "registry.dilog.dev"
 		REGISTRY_NAMESPACE = "syshub"
-		REGISTRY_CREDENTIALS = 'LITE_REGISTRY_CREDENTIALS'
+		REGISTRY_CREDENTIALS = 'habor'
 		IMAGE = "core"
         BUILD_TAG = "latest"
 	}
