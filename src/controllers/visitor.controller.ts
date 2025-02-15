@@ -5,11 +5,11 @@ import { VisitorService } from '../services/visitor.service';
 import { VisitorInfoResponseDto } from '../dto/visitor.dto';
 
 @ApiTags('Info')
-@Controller()
+@Controller('info')
 export class VisitorController {
   constructor(private readonly visitorService: VisitorService) {}
 
-  @Get('info')
+  @Get()
   @ApiOperation({
     summary: 'Get visitor information',
     description: 'Returns detailed information about the current visitor including IP, location, and user agent details'

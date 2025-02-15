@@ -1,0 +1,33 @@
+<div class="wrapper">
+  <div class="container">
+    <div class="header">
+      <div class="useragent">
+        <div *ngIf="info?.location" class="item">
+          <label>Land:</label>
+          <span [innerText]="info?.location"></span>
+        </div>
+        <div class="item">
+          <label>Browser:</label>
+          <span [innerText]="info?.userAgentInfo?.browser"></span>
+        </div>
+      </div>
+      <div class="title bebas-neue-regular">
+        SYSHUB
+      </div>
+      <div class="useragent">
+        <div class="item">
+          <label>IP-Adresse:</label>
+          <span [innerText]="info?.ipAddress"></span>
+        </div>
+        <div *ngIf="info?.isp" class="item">
+          <label>ISP:</label>
+          <span [innerText]="info?.isp"></span>
+        </div>
+      </div>
+    </div>
+    <div class="lookup">
+      <div class="title">DNS-Lookup</div>
+      <input type="text" class="lookup-area">
+    </div>
+  </div>
+</div>

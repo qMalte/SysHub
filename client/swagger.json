@@ -1,0 +1,1045 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/info": {
+      "get": {
+        "description": "Returns detailed information about the current visitor including IP, location, and user agent details",
+        "operationId": "VisitorController_getVisitorInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Visitor information retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VisitorInfoResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Could not retrieve visitor information"
+          }
+        },
+        "summary": "Get visitor information",
+        "tags": [
+          "Info"
+        ]
+      }
+    },
+    "/api/v1/info/health": {
+      "get": {
+        "description": "Check if the service is healthy and ready to accept requests",
+        "operationId": "VisitorController_healthCheck",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          }
+        },
+        "summary": "Health check",
+        "tags": [
+          "Info"
+        ]
+      }
+    },
+    "/api/v1/dns-failover": {
+      "get": {
+        "operationId": "DnsFailoverController_get",
+        "parameters": [
+          {
+            "name": "domainName",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Policy found successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DnsRecord"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "summary": "Search a policy by name",
+        "tags": [
+          "DNS Failover"
+        ]
+      },
+      "post": {
+        "operationId": "DnsFailoverController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDnsRecordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Policy created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DnsRecord"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          }
+        },
+        "summary": "Create a new DNS failover policy",
+        "tags": [
+          "DNS Failover"
+        ]
+      }
+    },
+    "/api/v1/dns-failover/{id}": {
+      "patch": {
+        "operationId": "DnsFailoverController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Policy ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDnsRecordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Policy updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DnsRecord"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "404": {
+            "description": "Policy not found"
+          }
+        },
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "summary": "Update a DNS failover policy",
+        "tags": [
+          "DNS Failover"
+        ]
+      },
+      "delete": {
+        "operationId": "DnsFailoverController_remove",
+        "parameters": [
+          {
+            "name": "policyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Policy ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Policy deleted successfully"
+          }
+        },
+        "summary": "Delete a DNS failover policy",
+        "tags": [
+          "DNS Failover"
+        ]
+      }
+    },
+    "/api/v1/dns-failover/{id}/delete-token": {
+      "get": {
+        "operationId": "DnsFailoverController_getRemovalToken",
+        "parameters": [
+          {
+            "name": "policyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Policy ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Delete token generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DnsRecord"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Request DNS-Record for init Deletion of Policy",
+        "tags": [
+          "DNS Failover"
+        ]
+      }
+    },
+    "/api/v1/dns-failover/{id}/hook": {
+      "post": {
+        "operationId": "DnsFailoverController_handleRecovery",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Policy ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UptimeKumaResponseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Process triggered successfully"
+          }
+        },
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "summary": "Process incomming WebHook of UptimeKuma",
+        "tags": [
+          "DNS Failover"
+        ]
+      }
+    },
+    "/api/v1/dns/lookup/{domain}": {
+      "get": {
+        "operationId": "DnsController_lookupDomain",
+        "parameters": [
+          {
+            "name": "domain",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resolver",
+            "required": false,
+            "in": "query",
+            "description": "DNS resolver to use for the query",
+            "schema": {
+              "enum": [
+                "Cloudflare",
+                "Google",
+                "Quad9",
+                "AdGuard",
+                "Cisco"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "DNS lookup completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DnsLookupOutputDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid domain name or resolver"
+          },
+          "500": {
+            "description": "DNS lookup failed"
+          }
+        },
+        "summary": "Perform comprehensive DNS lookup for a domain",
+        "tags": [
+          "DNS - Lookup"
+        ]
+      }
+    },
+    "/api/v1/dns/resolvers": {
+      "get": {
+        "operationId": "DnsController_getAvailableResolvers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of available DNS resolvers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get list of available DNS resolvers",
+        "tags": [
+          "DNS - Lookup"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "SYS-HUB - REST API",
+    "description": "REST API of SYS-HUB - A DNS Service",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "Auth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Enter your API key"
+      }
+    },
+    "schemas": {
+      "UserAgentInfoDto": {
+        "type": "object",
+        "properties": {
+          "browser": {
+            "type": "string",
+            "description": "Browser name",
+            "example": "Chrome"
+          },
+          "version": {
+            "type": "string",
+            "description": "Browser version",
+            "example": "120.0.0"
+          },
+          "os": {
+            "type": "string",
+            "description": "Operating system",
+            "example": "Windows 10"
+          },
+          "device": {
+            "type": "string",
+            "description": "Device type",
+            "example": "Desktop"
+          }
+        },
+        "required": [
+          "browser",
+          "version",
+          "os",
+          "device"
+        ]
+      },
+      "LocationInfoDto": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "description": "Country name",
+            "example": "Germany"
+          },
+          "city": {
+            "type": "string",
+            "description": "City name",
+            "example": "Berlin"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "Latitude coordinate",
+            "example": 52.520008
+          },
+          "longitude": {
+            "type": "number",
+            "description": "Longitude coordinate",
+            "example": 13.404954
+          }
+        },
+        "required": [
+          "country",
+          "city",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "VisitorInfoResponseDto": {
+        "type": "object",
+        "properties": {
+          "ipAddress": {
+            "type": "string",
+            "description": "IP address of the visitor",
+            "example": "192.168.1.1"
+          },
+          "fqdn": {
+            "type": "object",
+            "description": "Fully Qualified Domain Name",
+            "example": "host.example.com",
+            "nullable": true
+          },
+          "isp": {
+            "type": "object",
+            "description": "Internet Service Provider",
+            "example": "Deutsche Telekom AG",
+            "nullable": true
+          },
+          "userAgent": {
+            "type": "string",
+            "description": "Raw user agent string",
+            "example": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+          },
+          "userAgentInfo": {
+            "description": "Formatted user agent information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserAgentInfoDto"
+              }
+            ]
+          },
+          "location": {
+            "description": "Geographic location information",
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationInfoDto"
+              }
+            ]
+          },
+          "timestamp": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Timestamp of the request",
+            "example": "2024-02-13T12:00:00Z"
+          }
+        },
+        "required": [
+          "ipAddress",
+          "userAgent",
+          "userAgentInfo",
+          "timestamp"
+        ]
+      },
+      "DnsRecord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "The unique identifier of the DNS record"
+          },
+          "healthCheckId": {
+            "type": "number",
+            "description": "The unique identifier of HealthCheck"
+          },
+          "name": {
+            "type": "string",
+            "description": "The domain name"
+          },
+          "primaryIp4": {
+            "type": "string",
+            "description": "The primary IPv4 address"
+          },
+          "backupIp4": {
+            "type": "string",
+            "description": "The backup IPv4 address"
+          },
+          "primaryIp6": {
+            "type": "string",
+            "description": "The primary IPv6 address"
+          },
+          "backupIp6": {
+            "type": "string",
+            "description": "The backup IPv6 address"
+          },
+          "apiToken": {
+            "type": "string",
+            "description": "The Cloudflare API token for this zone"
+          },
+          "secret": {
+            "type": "string",
+            "description": "The Secret-Key to allow Edit of Policy"
+          },
+          "deleteToken": {
+            "type": "string",
+            "description": "The Token to init a deletion Request"
+          },
+          "isInFailover": {
+            "type": "boolean",
+            "description": "Whether the domain is currently in failover mode"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When the record was created"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When the record was last updated"
+          }
+        },
+        "required": [
+          "id",
+          "healthCheckId",
+          "name",
+          "primaryIp4",
+          "backupIp4",
+          "primaryIp6",
+          "backupIp6",
+          "apiToken",
+          "secret",
+          "deleteToken",
+          "isInFailover",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateDnsRecordDto": {
+        "type": "object",
+        "properties": {
+          "healthCheckId": {
+            "type": "number",
+            "description": "The unique id of Healthcheck in UptimeKuma"
+          },
+          "name": {
+            "type": "string",
+            "description": "The domain name"
+          },
+          "primaryIp4": {
+            "type": "string",
+            "description": "The primary IPv4 address"
+          },
+          "backupIp4": {
+            "type": "string",
+            "description": "The backup IPv4 address"
+          },
+          "primaryIp6": {
+            "type": "string",
+            "description": "The primary IPv6 address"
+          },
+          "backupIp6": {
+            "type": "string",
+            "description": "The backup IPv6 address"
+          },
+          "apiToken": {
+            "type": "string",
+            "description": "The Cloudflare API token for this zone"
+          },
+          "secret": {
+            "type": "string",
+            "description": "Password / Secret - Key to edit policy"
+          }
+        },
+        "required": [
+          "healthCheckId",
+          "name",
+          "primaryIp4",
+          "backupIp4",
+          "primaryIp6",
+          "backupIp6",
+          "apiToken",
+          "secret"
+        ]
+      },
+      "UpdateDnsRecordDto": {
+        "type": "object",
+        "properties": {
+          "healthCheckId": {
+            "type": "number",
+            "description": "The unique id of Healthcheck in UptimeKuma"
+          },
+          "name": {
+            "type": "string",
+            "description": "The domain name"
+          },
+          "primaryIp4": {
+            "type": "string",
+            "description": "The primary IPv4 address"
+          },
+          "backupIp4": {
+            "type": "string",
+            "description": "The backup IPv4 address"
+          },
+          "primaryIp6": {
+            "type": "string",
+            "description": "The primary IPv6 address"
+          },
+          "backupIp6": {
+            "type": "string",
+            "description": "The backup IPv6 address"
+          },
+          "apiToken": {
+            "type": "string",
+            "description": "The Cloudflare API token for this zone"
+          },
+          "secret": {
+            "type": "string",
+            "description": "Password / Secret - Key to edit policy"
+          }
+        }
+      },
+      "UptimeKumaHeartbeatDto": {
+        "type": "object",
+        "properties": {
+          "monitorID": {
+            "type": "number",
+            "description": "Monitor ID"
+          },
+          "status": {
+            "type": "number",
+            "description": "Status code"
+          },
+          "time": {
+            "type": "string",
+            "description": "Timestamp of the heartbeat"
+          },
+          "msg": {
+            "type": "string",
+            "description": "Status message"
+          },
+          "important": {
+            "type": "boolean",
+            "description": "Importance flag"
+          },
+          "duration": {
+            "type": "number",
+            "description": "Duration in seconds"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Timezone name"
+          },
+          "timezoneOffset": {
+            "type": "string",
+            "description": "Timezone offset"
+          },
+          "localDateTime": {
+            "type": "string",
+            "description": "Local date time"
+          }
+        },
+        "required": [
+          "monitorID",
+          "status",
+          "time",
+          "msg",
+          "important",
+          "duration",
+          "timezone",
+          "timezoneOffset",
+          "localDateTime"
+        ]
+      },
+      "UptimeKumaMonitorDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Monitor ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Monitor name"
+          },
+          "description": {
+            "type": "object",
+            "description": "Monitor description"
+          },
+          "pathName": {
+            "type": "string",
+            "description": "Path name"
+          },
+          "parent": {
+            "type": "object",
+            "description": "Parent monitor"
+          },
+          "childrenIDs": {
+            "description": "Child monitor IDs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "url": {
+            "type": "string",
+            "description": "URL to monitor"
+          },
+          "method": {
+            "type": "string",
+            "description": "HTTP method"
+          },
+          "hostname": {
+            "type": "object",
+            "description": "Hostname"
+          },
+          "port": {
+            "type": "object",
+            "description": "Port number"
+          },
+          "maxretries": {
+            "type": "number",
+            "description": "Maximum retries"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Monitor weight"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Active status"
+          },
+          "forceInactive": {
+            "type": "boolean",
+            "description": "Force inactive status"
+          },
+          "type": {
+            "type": "string",
+            "description": "Monitor type"
+          },
+          "timeout": {
+            "type": "number",
+            "description": "Timeout in seconds"
+          },
+          "interval": {
+            "type": "number",
+            "description": "Check interval"
+          },
+          "tags": {
+            "description": "Tags associated with monitor",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "accepted_statuscodes": {
+            "description": "Accepted status codes",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "pathName",
+          "parent",
+          "childrenIDs",
+          "url",
+          "method",
+          "hostname",
+          "port",
+          "maxretries",
+          "weight",
+          "active",
+          "forceInactive",
+          "type",
+          "timeout",
+          "interval",
+          "tags",
+          "accepted_statuscodes"
+        ]
+      },
+      "UptimeKumaResponseDto": {
+        "type": "object",
+        "properties": {
+          "heartbeat": {
+            "description": "Heartbeat information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UptimeKumaHeartbeatDto"
+              }
+            ]
+          },
+          "monitor": {
+            "description": "Monitor information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UptimeKumaMonitorDto"
+              }
+            ]
+          },
+          "msg": {
+            "type": "string",
+            "description": "Response message"
+          }
+        },
+        "required": [
+          "heartbeat",
+          "monitor",
+          "msg"
+        ]
+      },
+      "NameServerInfoDto": {
+        "type": "object",
+        "properties": {
+          "server": {
+            "type": "string",
+            "description": "DNS server hostname",
+            "example": "ns1.example.com"
+          },
+          "isUsedForQuery": {
+            "type": "boolean",
+            "description": "Indicates if this nameserver was used for the current query",
+            "example": true
+          }
+        },
+        "required": [
+          "server",
+          "isUsedForQuery"
+        ]
+      },
+      "DnsRecordDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Type of DNS record (A, AAAA, CNAME, etc.)",
+            "example": "A"
+          },
+          "value": {
+            "description": "Value of the DNS record",
+            "example": "93.184.216.34",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "ttl": {
+            "type": "number",
+            "description": "Time to live in seconds",
+            "example": 300
+          }
+        },
+        "required": [
+          "type",
+          "value"
+        ]
+      },
+      "DnsRecordsDto": {
+        "type": "object",
+        "properties": {
+          "a": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DnsRecordDto"
+            }
+          },
+          "aaaa": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DnsRecordDto"
+            }
+          },
+          "cname": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DnsRecordDto"
+            }
+          },
+          "txt": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DnsRecordDto"
+            }
+          },
+          "mx": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DnsRecordDto"
+            }
+          },
+          "ns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DnsRecordDto"
+            }
+          }
+        },
+        "required": [
+          "a",
+          "aaaa",
+          "cname",
+          "txt",
+          "mx",
+          "ns"
+        ]
+      },
+      "WhoisDataDto": {
+        "type": "object",
+        "properties": {
+          "nameservers": {
+            "description": "List of authoritative nameservers",
+            "example": [
+              "ns1.example.com",
+              "ns2.example.com"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "registrar": {
+            "type": "string",
+            "description": "Domain registrar name",
+            "example": "Example Registrar, LLC"
+          },
+          "creationDate": {
+            "type": "string",
+            "description": "Domain creation date",
+            "example": "2020-01-01T00:00:00Z"
+          },
+          "expirationDate": {
+            "type": "string",
+            "description": "Domain expiration date",
+            "example": "2025-01-01T00:00:00Z"
+          }
+        },
+        "required": [
+          "nameservers"
+        ]
+      },
+      "DnsLookupOutputDto": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "Domain name that was queried",
+            "example": "example.com"
+          },
+          "nameservers": {
+            "description": "List of nameservers with query status",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameServerInfoDto"
+            }
+          },
+          "selectedNameserver": {
+            "type": "string",
+            "description": "Nameserver used for the DNS queries",
+            "example": "ns1.example.com"
+          },
+          "records": {
+            "description": "DNS records grouped by type",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DnsRecordsDto"
+              }
+            ]
+          },
+          "whoisData": {
+            "description": "WHOIS information for the domain",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WhoisDataDto"
+              }
+            ]
+          },
+          "usedResolver": {
+            "type": "string",
+            "enum": [
+              "Cloudflare",
+              "Google",
+              "Quad9",
+              "AdGuard",
+              "Cisco"
+            ],
+            "description": "DNS resolver used for the query",
+            "example": "Cloudflare"
+          }
+        },
+        "required": [
+          "domain",
+          "nameservers",
+          "selectedNameserver",
+          "records",
+          "whoisData",
+          "usedResolver"
+        ]
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "JSON",
+    "url": "api-json"
+  }
+}

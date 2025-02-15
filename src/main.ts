@@ -9,14 +9,17 @@ config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.enableCors()
 
   const config = new DocumentBuilder()
     .setTitle('SYS-HUB - REST API')
     .setDescription('REST API of SYS-HUB - A DNS Service')
     .setVersion('1.0')
     .setExternalDoc('JSON', 'api-json')
+    .setBasePath('api/v1')
     .addApiKey(
       {
         type: 'apiKey',

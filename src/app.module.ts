@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DnsFailoverModule } from './dns-failover.module';
 import { VisitorController } from './controllers/visitor.controller';
 import { VisitorService } from './services/visitor.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -11,7 +13,12 @@ import { VisitorService } from './services/visitor.service';
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [
+        ConfigModule,
+        ServeStaticModule.forRoot({
+          rootPath: join(__dirname, '..', '..', 'client/public/browser'),
+        }),
+      ],
       useFactory: () => ({
         type: 'mysql',
         host: process.env.DB_HOST || 'localhost',

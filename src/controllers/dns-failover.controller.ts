@@ -108,16 +108,17 @@ export class DnsFailoverController {
 
   @Get(':id/delete-token')
   @ApiOperation({ summary: 'Request DNS-Record for init Deletion of Policy' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'Policy ID',
+    type: 'number'
+  })
   @ApiResponse({
     status: 204,
     type: DnsRecord,
     description: 'Delete token generated successfully'
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Policy not found'
-  })
-  @HttpCode(HttpStatus.NO_CONTENT)
   async getRemovalToken(@Param('policyId') policyId: string) {
     if (policyId == null || +policyId <= 0) {
       throw new UnauthorizedException("Invalid policy ID");
@@ -139,15 +140,16 @@ export class DnsFailoverController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a DNS failover policy' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'Policy ID',
+    type: 'number'
+  })
   @ApiResponse({
     status: 204,
     description: 'Policy deleted successfully'
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Policy not found'
-  })
-  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('policyId') policyId: string) {
     if (policyId == null || +policyId <= 0) {
       throw new UnauthorizedException("Invalid policy ID");
@@ -177,13 +179,15 @@ export class DnsFailoverController {
 
   @Post(':id/hook')
   @ApiOperation({ summary: 'Process incomming WebHook of UptimeKuma' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'Policy ID',
+    type: 'number'
+  })
   @ApiResponse({
     status: 200,
     description: 'Process triggered successfully'
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Policy not found'
   })
   @UseGuards(ApiKeyGuard)
   @ApiSecurity('Auth')

@@ -1,0 +1,33 @@
+@import "https://fonts.werkhausen.org/Roboto/style.css";
+@import "https://fonts.werkhausen.org/SummerHearts/style.css";
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+html, body {
+  background: #1b2131;
+  color: aliceblue;
+  min-height: 100%;
+  min-width: 100%;
+}
+
+.Roboto {
+  font-family: 'Roboto', sans-serif;
+}
+
+.SummerHearts {
+  font-family: 'Summer Hearts';
+  font-weight: normal;
+  font-style: normal;
+}
+
+.bebas-neue-regular {
+  font-family: "Bebas Neue", serif;
+  font-weight: bold;
+  font-style: normal;
+}
